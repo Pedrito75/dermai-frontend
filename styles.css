@@ -1,0 +1,11 @@
+.stAppHeader {
+  background-color: transparent;
+}
+
+.stMainBlockContainer {
+  padding: 10px !important;
+}
+
+#upload-a-mole, #results {
+  padding-top: 0;
+}

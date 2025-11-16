@@ -1,0 +1,6 @@
+streamlit
+requests
+pandas
+python-dotenv
+keras # delete this when the api is shipped
+tensorflow # delete this when the api is shipped
