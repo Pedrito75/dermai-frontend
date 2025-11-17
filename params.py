@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 # ----- api host -----
 SERVICE_URL = os.getenv("SERVICE_URL")

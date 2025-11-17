@@ -4,13 +4,9 @@ from PIL import Image
 import streamlit as st
 
 from params import *
-from api_simulator import MODEL_DATA, MODELS, predict_mole
-
-if "models" not in st.session_state:
-    st.session_state.models = MODELS
 
 if "model_labels" not in st.session_state:
-    st.session_state.model_labels = [m["label"] for m in MODEL_DATA.values()]
+    st.session_state.model_labels = requests.get(f"{SERVICE_URL}/models").json()
 
 if "is_uploaded" not in st.session_state:
     st.session_state.is_uploaded = False
@@ -84,15 +80,18 @@ with st.container(border=True):
                     st.warning("You need add an image!")
                 else:
                     with st.spinner(text="Predicting your fate...", show_time=True):
-                        image = Image.open(st.session_state.image)
-                        model = st.session_state.models[st.session_state.model_labels.index(selected_model_label)]
+                        # image = Image.open(st.session_state.image)
+                        image = st.session_state.image
+                        files = {
+                            "img": (image.name, image.getbuffer(), image.type)
+                        }
 
-                        pred = pd.DataFrame(predict_mole(image, model)).T
-                        pred.index = pred.index.map(CODE_TO_CLASS)
-                        pred.columns = ["Probabilities"]
-                        pred = pred.sort_values(by="Probabilities", ascending=False)
-                        pred["color"] = pred.index.map(CLASS_TO_COLOR)
-                        pred["hexa"] = pred["color"].map(COLOR_TO_HEXA)
+                        data = {
+                            "model_label": selected_model_label
+                        }
+                        response = requests.post(f"{SERVICE_URL}/predict", data=data, files=files)
+
+                        pred = pd.DataFrame(response.json()).set_index("index")
 
                         with st.container(height="stretch", vertical_alignment="top"):
                             best_pred = pred.iloc[0]
