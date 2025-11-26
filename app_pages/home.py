@@ -1,8 +1,5 @@
 import requests
-import pandas as pd
-from PIL import Image
 import streamlit as st
-import altair as alt
 
 from params import *
 from components.select_boxes import select_model

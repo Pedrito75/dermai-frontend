@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 
 from params import *
-from callbacks import scroll_to_bottom
+# from callbacks import scroll_to_bottom
 
 def check_relevance(files: dict) -> bool:
     security_response = requests.post(f"{SERVICE_URL}/control", files=files)

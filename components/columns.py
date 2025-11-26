@@ -1,10 +1,7 @@
 import streamlit as st
-import altair as alt
-import requests
-import pandas as pd
 
 from params import *
-from callbacks import reset_image, scroll_to_bottom
+from callbacks import reset_image
 from actions import try_predict
 
 # ==================== LEFT ====================
