@@ -4,6 +4,9 @@ import requests
 import pandas as pd
 
 from params import *
+from components.charts import results_chart
+from utils import adjust_predictions
+
 # from callbacks import scroll_to_bottom
 
 def check_relevance(files: dict) -> bool:
@@ -20,10 +23,28 @@ def check_relevance(files: dict) -> bool:
 def show_results(data: dict, files: dict):
     response = requests.post(f"{SERVICE_URL}/predict", data=data, files=files)
 
-    pred = pd.DataFrame(response.json())
+    from pprint import pprint
 
-    with st.container(height="stretch", vertical_alignment="top"):
-        best_pred = pred.iloc[0]
+    zone_input, age_input = st.session_state.zone_input, st.session_state.age_input
+
+    raw_pred = pd.DataFrame(response.json())
+
+    print("\n==================== Raw pred ====================\n")
+    pprint(raw_pred)
+
+
+
+    adjusted_pred = adjust_predictions(raw_pred, zone_input, age_input)
+
+    print("\n==================== Adjusted pred ====================\n")
+    print(zone_input, age_input)
+    pprint(adjusted_pred)
+
+    adjusted_pred.sort_values(by="Probabilities", ascending=False, inplace=True)
+    adjusted_pred.reset_index(drop=True, inplace=True)
+
+    with st.container(height="stretch", vertical_alignment="top", key="results_div"):
+        best_pred = raw_pred.iloc[0]
         class_pred = CLASS_TO_NAME[best_pred["index"]]
         if best_pred["color"] == "green":
             st.success(f"You should be fine 👌\nI bet it's a `{class_pred}`")
@@ -32,17 +53,7 @@ def show_results(data: dict, files: dict):
         else:
             st.error(f"It looks like a `{class_pred}` ⚠️\nDon't wait to see a professional")
 
-    chart = (
-        alt.Chart(pred)
-        .mark_bar()
-        .encode(
-            y=alt.Y("index:N", sort="-x"),
-            x=alt.X("Probabilities:Q"),
-            color=alt.Color("hexa:N", scale=None),
-            tooltip=["Probabilities"],
-        )
-    )
-    st.altair_chart(chart, width="stretch")
+    results_chart(raw_pred)
 
 def try_predict(selected_model_label: str):
     if not st.session_state.image:

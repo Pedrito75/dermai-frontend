@@ -22,7 +22,7 @@ def upload():
             file = st.file_uploader(
                 "Upload an image",
                 type=["jpg", "jpeg", "png"],
-                key="uploader"
+                key="uploader",
             )
             if file:
                 st.session_state.is_uploaded = True
@@ -33,6 +33,7 @@ def upload():
             st.image(st.session_state.image, caption="Uploaded image")
             if st.button("Choose another image"):
                 st.session_state.is_uploaded = False
+                reset_image()
                 st.rerun()
     else:
         st.session_state.is_uploaded = False
@@ -42,11 +43,11 @@ def upload():
 
 # ==================== RIGHT ====================
 def results(selected_model_label: str):
-    with st.container(horizontal=True, vertical_alignment="bottom"):
+    with st.container(horizontal=True, vertical_alignment="bottom", key="predict_div"):
         st.markdown("## Results")
 
         predict_btn = st.button("Predict", type="primary")#, on_click=scroll_to_bottom)
 
-    with st.container(height="stretch", vertical_alignment="bottom"):
+    with st.container(height="stretch", vertical_alignment="top", key="results_and_info_div"):
         if predict_btn:
             try_predict(selected_model_label)
