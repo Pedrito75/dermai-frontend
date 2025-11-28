@@ -2,6 +2,7 @@ import streamlit as st
 import altair as alt
 import requests
 import pandas as pd
+from pprint import pprint
 
 from params import *
 from components.charts import results_chart
@@ -23,16 +24,11 @@ def check_relevance(files: dict) -> bool:
 def show_results(data: dict, files: dict):
     response = requests.post(f"{SERVICE_URL}/predict", data=data, files=files)
 
-    from pprint import pprint
-
     zone_input, age_input = st.session_state.zone_input, st.session_state.age_input
 
-    raw_pred = pd.DataFrame(response.json())
-
     print("\n==================== Raw pred ====================\n")
+    raw_pred = pd.DataFrame(response.json())
     pprint(raw_pred)
-
-
 
     adjusted_pred = adjust_predictions(raw_pred, zone_input, age_input)
 
