@@ -2,7 +2,7 @@ import requests
 import streamlit as st
 
 from params import *
-from components.containers import model_selection, metadata, assistant
+from components.sections import model_selection, metadata, assistant, footer
 
 def page_setup():
     if "model_labels" not in st.session_state:
@@ -16,19 +16,8 @@ def page_setup():
         st.session_state.zone_input = "Head/Neck"
         st.session_state.age_input = "0-25 years old"
 
-    # if "is_uploaded" not in st.session_state:
-        # st.session_state.is_uploaded = False
-
-    # if "image" not in st.session_state:
-        # st.session_state.image = None
-
-    # if "zone_input" not in st.session_state:
-    #     st.session_state.zone_input = "Head/Neck"
-
-    # window tile setup
     st.set_page_config(page_title="DermAI", page_icon="🔍", layout="centered")
 
-    # add css styling
     with open('./styles.css') as f:
         css = f.read()
     st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
@@ -45,3 +34,5 @@ def home_page():
     metadata()
 
     assistant(selected_model_label)
+
+    footer()

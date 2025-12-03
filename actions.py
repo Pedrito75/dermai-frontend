@@ -37,10 +37,14 @@ def show_results(data: dict, files: dict):
     pprint(adjusted_pred)
 
     adjusted_pred.sort_values(by="Probabilities", ascending=False, inplace=True)
+    print("\n==================== Sorted adjusted pred ====================\n")
+    pprint(adjusted_pred)
+
     adjusted_pred.reset_index(drop=True, inplace=True)
 
     with st.container(height="stretch", vertical_alignment="top", key="results_div"):
-        best_pred = raw_pred.iloc[0]
+        # best_pred = raw_pred.iloc[0]
+        best_pred = adjusted_pred.iloc[0]
         class_pred = CLASS_TO_NAME[best_pred["index"]]
         if best_pred["color"] == "green":
             st.success(f"You should be fine 👌\nI bet it's a `{class_pred}`")
@@ -49,7 +53,8 @@ def show_results(data: dict, files: dict):
         else:
             st.error(f"It looks like a `{class_pred}` ⚠️\nDon't wait to see a professional")
 
-    results_chart(raw_pred)
+    # results_chart(raw_pred)
+    results_chart(adjusted_pred)
 
 def try_predict(selected_model_label: str):
     if not st.session_state.image:
