@@ -7,7 +7,9 @@ from components.sections import model_selection, metadata, assistant, footer
 def page_setup():
     if "model_labels" not in st.session_state:
         try:
-            st.session_state.model_labels = requests.get(f"{SERVICE_URL}/models").json()
+            model_names = requests.get(f"{SERVICE_URL}/models").json()
+            model_names = [mn for mn in model_names if mn != "DenseNet"] # unhandled error with `DenseNet` model...
+            st.session_state.model_labels = model_names
         except:
             st.session_state.model_labels = []
 

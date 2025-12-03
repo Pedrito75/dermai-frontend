@@ -13,17 +13,11 @@ def adjust_predictions(raw_pred: pd.DataFrame, anatom_zone: str, age_range: str)
 
     # Special case: Acral
     key = ("Acral", "All Ages") if anatom_zone == "Acral" else (anatom_zone, age_range)
-    print("KEY:")
-    print(key)
     modifiers = CONTEXT_MODIFIERS.get(key, [0.0] * 7)
     modifiers = np.array(modifiers)
-    print("MODIFIERS:")
-    print(modifiers)
 
     # Extract original probabilities (vector of length 7)
     base_probs = np.array(adjusted_pred["Probabilities"])
-    print("BASE PROBS:")
-    print(base_probs)
 
     # Safety: normalize if not already
     base_probs = base_probs / np.sum(base_probs)
